@@ -7,18 +7,18 @@ import java.io.*;
 import java.util.*;
 
 class Node {
-    private int x;
-    private int y;
+    private int row;
+    private int col;
     private Node parent;
     
-    public Node(int x1, int y1){
-	x = x1;
-	y = y1;
+    public Node(int r, int c){
+	row = r;
+	col = c;
 	parent = null;
     }
 
-    public Node(int x1, int y1, Node p){
-	this(x1, y1);
+    public Node(int r, int c, Node p){
+	this(r, c);
 	parent = p;
     }
 
@@ -26,12 +26,12 @@ class Node {
 	parent = n;
     }
 
-    public int getX(){
-	return x;
+    public int getRow(){
+	return row;
     } 
 
-    public int getY(){
-	return y;
+    public int getCol(){
+	return col;
     }
 
     public Node getParent(){
@@ -39,7 +39,7 @@ class Node {
     }
 
     public String toString(){
-	return x + " " + y ;//" " + parent;
+	return row + " " + col ;//" " + parent;
     }
 
 }
@@ -77,7 +77,7 @@ class MazeSolver {
 		if ( w < line.length() ) 
 		    w = line.length();
 		for( int i=0; i<line.length(); i++ )
-		    maze[i][row] = line.charAt( i );
+		    maze[row][i] = line.charAt( i );
 		h++;
 		row++;
 	    } 
@@ -89,12 +89,12 @@ class MazeSolver {
 
     public String toString() {
 	//send ANSI code "ESC[0;0H" to place cursor in upper left
-	String retStr = "[0;0H"; 
+	String retStr = "";// "[0;0H"; 
 	//String retStr = "";
 	int i, j;
 	for( i=0; i<h; i++ ) {
 	    for( j=0; j<w; j++ )
-		retStr = retStr + maze[j][i];
+		retStr = retStr + maze[i][j];
 	    retStr = retStr + "\n";
 	}
 	return retStr;
@@ -110,45 +110,45 @@ class MazeSolver {
 	}
     }
 
-    public boolean inBounds(int x, int y){
-	return (x >= 0 && y >= 0 && x < w && y < h);
+    public boolean inBounds(int r, int c){
+	return (r >= 0 && c >= 0 && r < h && c < w);
     }
 
-    public boolean visitable(int x, int y){
-	return inBounds(x, y) && maze[x][y] != WALL && maze[x][y] != VISITED_PATH;
+    public boolean visitable(int r, int c){
+	return inBounds(r, c) && maze[r][c] != WALL && maze[r][c] != VISITED_PATH;
     }
 
-    public boolean isEnd(int x, int y){
-	return maze[x][y] == EXIT;
+    public boolean isEnd(int r, int c){
+	return maze[r][c] == EXIT;
     }
 
-    public void mark(int x, int y){
-	maze[x][y] = VISITED_PATH;
+    public void mark(int r, int c){
+	maze[r][c] = VISITED_PATH;
     }
 
     public void solve(Node n){
 	if (solved) return;
 	//	System.out.println(n);
 	//maze[x][y] = VISITED_PATH;
-	int x = n.getX();
-	int y = n.getY(); 
+	int r = n.getRow();
+	int c = n.getCol(); 
 	Deque<Node> nodes = new ArrayDeque<Node>();
-	int[][] adjacents = { {x + 1, y},
-			      {x - 1, y},
-			      {x, y + 1},
-			      {x, y - 1} };
+	int[][] adjacents = { {r + 1, c},
+			      {r - 1, c},
+			      {r, c + 1},
+			      {r, c - 1} };
 	for (int[] adj : adjacents){
-	    int xcor = adj[0];
-	    int ycor = adj[1];
-	    if (visitable(xcor, ycor)) {
-		if (isEnd(xcor, ycor)){	
+	    int row = adj[0];
+	    int col = adj[1];
+	    if (visitable(row, col)) {
+		if (isEnd(row, col)){	
 		    solved = true;
-		    finish(new Node(xcor, ycor, n));
+		    finish(new Node(row, col, n));
 		    return;
 		}
 		else {		   
-		    mark(xcor, ycor);
-		    nodes.add(new Node(xcor, ycor, n));
+		    mark(row, col);
+		    nodes.add(new Node(row, col, n));
 		}
 	    }
 	}
@@ -159,14 +159,14 @@ class MazeSolver {
 	return;
     }
 
-    public void solve(int x, int y){
-	solve(new Node(x, y));
+    public void solve(int r, int c){
+	solve(new Node(r, c));
 	if (!solved) System.out.println("NO SOLUTION HOMIE");
     }
 
     public void finish(Node n){
 	while (n != null){
-	    maze[n.getX()][n.getY()] = ANSWER;
+	    maze[n.getRow()][n.getCol()] = ANSWER;
 	    n = n.getParent();
 	}
 	System.out.println(this);

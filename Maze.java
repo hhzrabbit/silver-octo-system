@@ -64,11 +64,11 @@ class MazeSolver {
 
 	//init 2D array to represent maze 
 	// ...same dimensions as default terminal window
-	maze = new char[80][25];
+	maze = new char[80][80];
 	h = 0;
 	w = 0;
 
-	try {
+		try {
 	    Scanner sc = new Scanner( new File(inputFile) );
 	    System.out.println( "reading in file..." );
 	    int row = 0;
@@ -81,8 +81,9 @@ class MazeSolver {
 		h++;
 		row++;
 	    } 
-	} 
-	catch( Exception e ) { System.out.println( "Error reading file" ); }
+	    	} 
+	catch( FileNotFoundException e ) { System.out.println( "Error reading file" ); 
+	    System.exit(0);}
 	solved = false;
     }//end constructor
 
@@ -179,8 +180,11 @@ class MazeSolver {
 public class Maze {
 
     public static void main( String[] args ) {
-
-	try {
+	if (args.length < 1) {
+	    System.out.println( "Error reading input file" );
+	    System.out.println( "Usage: java Maze < filename >" );
+	}
+	else {
 	    String mazeInputFile = args[0];
 
 	    MazeSolver ms = new MazeSolver( mazeInputFile );
@@ -194,10 +198,6 @@ public class Maze {
 	    //comment next line out when ready to randomize startpos
 	    ms.solve( 1, 1 ); 
 
-	}
-	catch( Exception e ) { 
-	    System.out.println( "Error reading input file." );
-	    System.out.println( "Usage: java Maze <filename>" ); 
 	}
     }
 

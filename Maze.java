@@ -49,6 +49,7 @@ class MazeSolver {
 
     private char[][] maze;
     private int h, w; //height, width of maze
+    private int startR, startC = -2;
     private boolean solved;
 
     //initialize constants
@@ -76,8 +77,14 @@ class MazeSolver {
 		String line = sc.nextLine();
 		if ( w < line.length() ) 
 		    w = line.length();
-		for( int i=0; i<line.length(); i++ )
+		for( int i=0; i<line.length(); i++ ) {
+		    char c = line.charAt(i);
+		    if (c == START) {
+			startR = row;
+			startC = i;
+		    }
 		    maze[row][i] = line.charAt( i );
+		}
 		h++;
 		row++;
 	    } 
@@ -129,8 +136,6 @@ class MazeSolver {
 
     public void solve(Node n){
 	if (solved) return;
-	//	System.out.println(n);
-	//maze[x][y] = VISITED_PATH;
 	int r = n.getRow();
 	int c = n.getCol(); 
 	Deque<Node> nodes = new ArrayDeque<Node>();
@@ -160,9 +165,10 @@ class MazeSolver {
 	return;
     }
 
-    public void solve(int r, int c){
-	solve(new Node(r, c));
+    public void solve(){
+	solve(new Node(startR, startC));
 	if (!solved) System.out.println("NO SOLUTION HOMIE");
+	
     }
 
     public void finish(Node n){
@@ -196,7 +202,7 @@ public class Maze {
 
 	    //drop hero into the maze (be sure coords are on the path)
 	    //comment next line out when ready to randomize startpos
-	    ms.solve( 1, 1 ); 
+	    ms.solve(); 
 
 	}
     }
